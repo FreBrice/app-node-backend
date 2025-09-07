@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Préstamo</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .formulario {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 10px;
+      background: #007BFF;
+      color: #fff;
+      font-size: 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .resultado {
+      margin-top: 20px;
+      background: #e9f7ef;
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #c3e6cb;
+    }
+  </style>
+</head>
+<body>
+  <div class="formulario">
+    <h2>Simulador de Préstamo</h2>
+    <form id="prestamoForm">
+      <label for="nombre">Nombre completo:</label>
+      <input type="text" id="nombre" required>
+
+      <label for="documento">Documento de identidad:</label>
+      <input type="text" id="documento" required>
+
+      <label for="monto">Monto del préstamo (€):</label>
+      <input type="number" id="monto" value="1000" required>
+
+      <label for="interes">Interés (%):</label>
+      <input type="number" id="interes" value="20" required>
+
+      <label for="dias">Plazo (días):</label>
+      <input type="number" id="dias" value="30" required>
+
+      <button type="submit">Calcular</button>
+    </form>
+
+    <div id="resultado" class="resultado" style="display:none;"></div>
+    <button id="exportarExcel" style="display:none; background:green;">Exportar a Excel</button>
+  </div>
+
+  <script>
+    let cronograma = [];
+
+    document.getElementById("prestamoForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const nombre = document.getElementById("nombre").value;
+      const documento = document.getElementById("documento").value;
+      const monto = parseFloat(document.getElementById("monto").value);
+      const interes = parseFloat(document.getElementById("interes").value);
+      const dias = parseInt(document.getElementById("dias").value);
+
+      // Calcular total y cuota diaria
+      const total = monto + (monto * interes / 100);
+      const cuota = total / dias;
+
+      // Generar cronograma de pagos
+      cronograma = [];
+      for (let i = 1; i <= dias; i++) {
+        cronograma.push({
+          Dia: i,
+          Nombre: nombre,
+          Documento: documento,
+          "Monto Prestado (€)": monto.toFixed(2),
+          "Interés (%)": interes,
+          "Total a Devolver (€)": total.toFixed(2),
+          "Cuota Diario (€)": cuota.toFixed(2),
+          "Pago Realizado (€)": "" // campo vacío para registrar después
+        });
+      }
+
+      // Mostrar resumen en pantalla
+      const resultadoDiv = document.getElementById("resultado");
+      resultadoDiv.style.display = "block";
+      resultadoDiv.innerHTML = `
+        <p><strong>Nombre:</strong> ${nombre}</p>
+        <p><strong>Documento:</strong> ${documento}</p>
+        <p><strong>Monto prestado:</strong> €${monto.toFixed(2)}</p>
+        <p><strong>Interés aplicado:</strong> ${interes}%</p>
+        <p><strong>Total a devolver:</strong> €${total.toFixed(2)}</p>
+        <p><strong>Plazo:</strong> ${dias} días</p>
+        <p><strong>Cuota diaria:</strong> €${cuota.toFixed(2)}</p>
+      `;
+
+      // Mostrar botón de exportar
+      document.getElementById("exportarExcel").style.display = "block";
+    });
+
+    document.getElementById("exportarExcel").addEventListener("click", function() {
+      if (cronograma.length === 0) return;
+
+      // Crear hoja de Excel
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(cronograma);
+
+      XLSX.utils.book_append_sheet(wb, ws, "Cronograma");
+      
+      // Descargar archivo
+      XLSX.writeFile(wb, "cronograma_prestamo.xlsx");
+    });
+  </script>
+</body>
+</html>
