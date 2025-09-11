@@ -6,6 +6,43 @@
     <title>First Web</title>
 </head>
 <body>
-    <div>hello world</div>
+    <h2>Lista de Préstamos Registrados</h2>
+<table border="1" cellpadding="8" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Documento</th>
+      <th>Nombre</th>
+      <th>Monto</th>
+      <th>Interés (%)</th>
+      <th>Días</th>
+      <th>Total</th>
+      <th>Cuota diaria</th>
+      <th>Fecha de creación</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (typeof prestamos !== 'undefined' && prestamos.length >0) { %>
+    <% prestamos.forEach(p => { %>
+      <tr>
+        <td><%= p.documento %></td>
+        <td><%= p.nombre %></td>
+        <td>€<%= p.monto.toFixed(2) %></td>
+        <td><%= p.interes %>%</td>
+        <td><%= p.dias %></td>
+        <td>€<%= p.total.toFixed(2) %></td>
+        <td>€<%= p.cuotaDiaria.toFixed(2) %></td>
+        <td><%= p.fechaCreacion.toLocaleDateString() %></td>
+      </tr>
+    <% }) %>
+    <% }  else {%>
+      <tr>
+        <td colspan="8">No hay préstamos registrados</td>
+      </tr>
+      <% } %>
+  </tbody>
+</table>
+
+<button id="exportExcel">Exportar tabla a Excel</button>
+
 </body>
 </html>

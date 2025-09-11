@@ -9,7 +9,10 @@ const PrestamoSchema = new mongoose.Schema({
     dias:{type: Number, required: true},
     total:{type: Number, required: true},
     cuotaDiaria:{type: Number, required: true},
-    fechaCreacion:{type: Number, required: true},
+    fechaCreacion:{
+        type: Date, 
+        default: Date.now,
+        required: true},
     pagos:[
         {
             dia: Number,
@@ -19,4 +22,4 @@ const PrestamoSchema = new mongoose.Schema({
     ]
 });
 console.log(PrestamoSchema)
-export default mongoose.model("prestamo", PrestamoSchema);
+export default mongoose.model("Prestamo", PrestamoSchema);

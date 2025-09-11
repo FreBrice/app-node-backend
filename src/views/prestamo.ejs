@@ -60,89 +60,27 @@
 <body>
   <div class="formulario">
     <h2>Simulador de Préstamo</h2>
-    <form id="prestamoForm">
-      <label for="nombre">Nombre completo:</label>
-      <input type="text" id="nombre" required>
+    <form action="/guardar-prestamo" method="POST">
+  <label for="nombre">Nombre completo:</label>
+  <input type="text" name="nombre" required>
 
-      <label for="documento">Documento de identidad:</label>
-      <input type="text" id="documento" required>
+  <label for="documento">Documento de identidad:</label>
+  <input type="text" name="documento" required>
 
-      <label for="monto">Monto del préstamo (€):</label>
-      <input type="number" id="monto" value="1000" required>
+  <label for="monto">Monto del préstamo (€):</label>
+  <input type="number" name="monto" value="1000" required>
 
-      <label for="interes">Interés (%):</label>
-      <input type="number" id="interes" value="20" required>
+  <label for="interes">Interés (%):</label>
+  <input type="number" name="interes" value="20" required>
 
-      <label for="dias">Plazo (días):</label>
-      <input type="number" id="dias" value="30" required>
+  <label for="dias">Plazo (días):</label>
+  <input type="number" name="dias" value="30" required>
 
-      <button type="submit">Calcular</button>
-    </form>
+  <button type="submit">Guardar préstamo</button>
+</form>
 
     <div id="resultado" class="resultado" style="display:none;"></div>
     <button id="exportarExcel" style="display:none; background:green;">Exportar a Excel</button>
   </div>
-
-  <script>
-    let cronograma = [];
-
-    document.getElementById("prestamoForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const nombre = document.getElementById("nombre").value;
-      const documento = document.getElementById("documento").value;
-      const monto = parseFloat(document.getElementById("monto").value);
-      const interes = parseFloat(document.getElementById("interes").value);
-      const dias = parseInt(document.getElementById("dias").value);
-
-      // Calcular total y cuota diaria
-      const total = monto + (monto * interes / 100);
-      const cuota = total / dias;
-
-      // Generar cronograma de pagos
-      cronograma = [];
-      for (let i = 1; i <= dias; i++) {
-        cronograma.push({
-          Dia: i,
-          Nombre: nombre,
-          Documento: documento,
-          "Monto Prestado (€)": monto.toFixed(2),
-          "Interés (%)": interes,
-          "Total a Devolver (€)": total.toFixed(2),
-          "Cuota Diario (€)": cuota.toFixed(2),
-          "Pago Realizado (€)": "" // campo vacío para registrar después
-        });
-      }
-
-      // Mostrar resumen en pantalla
-      const resultadoDiv = document.getElementById("resultado");
-      resultadoDiv.style.display = "block";
-      resultadoDiv.innerHTML = `
-        <p><strong>Nombre:</strong> ${nombre}</p>
-        <p><strong>Documento:</strong> ${documento}</p>
-        <p><strong>Monto prestado:</strong> €${monto.toFixed(2)}</p>
-        <p><strong>Interés aplicado:</strong> ${interes}%</p>
-        <p><strong>Total a devolver:</strong> €${total.toFixed(2)}</p>
-        <p><strong>Plazo:</strong> ${dias} días</p>
-        <p><strong>Cuota diaria:</strong> €${cuota.toFixed(2)}</p>
-      `;
-
-      // Mostrar botón de exportar
-      document.getElementById("exportarExcel").style.display = "block";
-    });
-
-    document.getElementById("exportarExcel").addEventListener("click", function() {
-      if (cronograma.length === 0) return;
-
-      // Crear hoja de Excel
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.json_to_sheet(cronograma);
-
-      XLSX.utils.book_append_sheet(wb, ws, "Cronograma");
-      
-      // Descargar archivo
-      XLSX.writeFile(wb, "cronograma_prestamo.xlsx");
-    });
-  </script>
 </body>
 </html>

@@ -1,9 +1,21 @@
 import {Router}from 'express'
+import Prestamo from '../models/Prestamo.js'
+
+
 const router = Router()
 
-
 //función para enviar un renderizado al frontend 
-router.get('/', (req, res) => res.render('index'))
+//añadimos función que renderizar los prestamos registrados en la base de datos
+router.get('/', async (req, res) => {
+  try {
+    const Prestamos = await Prestamo.find().sort({  fechaCreacion: -1});
+    console.log('Préstamos encontrados', Prestamos);
+    res.render('index', { prestamos });
+  } catch (error) {
+    console.error('Error al obtener préstamos', error);
+    res.status(500).send("Error al cargar los préstamos");
+  }
+})
 
 //formulario 1
 router.get('/prestamo', (req, res) => res.render('prestamo'))
@@ -62,6 +74,16 @@ router.post("/registrar-pago/:documento", async (req, res) => {
   }
 });
 
+// Ruta para ver todos los préstamos
+router.get("/prestamos", async (req, res) => {
+  try {
+    const prestamos = await Prestamo.find().sort({ fechaCreacion: -1 });
+    res.render("index", { prestamos });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error al cargar los préstamos");
+  }
+});
 
 //formulario 2
 router.get('/pago', (req, res) => res.render('pago'))
