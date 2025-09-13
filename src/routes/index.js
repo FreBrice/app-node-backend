@@ -3,13 +3,13 @@ import Prestamo from '../models/Prestamo.js'
 
 
 const router = Router()
-
+const prestamos = [];
 //función para enviar un renderizado al frontend 
 //añadimos función que renderizar los prestamos registrados en la base de datos
 router.get('/', async (req, res) => {
   try {
-    const Prestamos = await Prestamo.find().sort({  fechaCreacion: -1});
-    console.log('Préstamos encontrados', Prestamos);
+    const prestamos = await Prestamo.find().sort({ fechaCreacion: -1 });
+    console.log('Préstamos encontrados', prestamos);
     res.render('index', { prestamos });
   } catch (error) {
     console.error('Error al obtener préstamos', error);
@@ -86,7 +86,7 @@ router.get("/prestamos", async (req, res) => {
 });
 
 //formulario 2
-router.get('/pago', (req, res) => res.render('pago'))
+router.get('/pago', (req, res) => res.render('pagos'))
 
 
 

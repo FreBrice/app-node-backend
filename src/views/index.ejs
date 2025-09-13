@@ -7,6 +7,11 @@
 </head>
 <body>
     <h2>Lista de Préstamos Registrados</h2>
+
+    <button onclick="location.href='/prestamo'">Nuevo Préstamo</button>
+    <button onclick="location.href='/pago'">Registrar Pago Diario</button>
+    <br><br>
+
 <table border="1" cellpadding="8" cellspacing="0">
   <thead>
     <tr>
@@ -18,6 +23,7 @@
       <th>Total</th>
       <th>Cuota diaria</th>
       <th>Fecha de creación</th>
+      <th>Cuotas pagadas</th>
     </tr>
   </thead>
   <tbody>
@@ -31,12 +37,17 @@
         <td><%= p.dias %></td>
         <td>€<%= p.total.toFixed(2) %></td>
         <td>€<%= p.cuotaDiaria.toFixed(2) %></td>
-        <td><%= p.fechaCreacion.toLocaleDateString() %></td>
+        <td><%= new Date(p.fechaCreacion).toLocaleDateString() %></td>
+        <td>
+          <div style="background:#e0e0e0;padding:4px;border-radius:4px;text-align:center;">
+            <%= p.pagos ? p.pagos.length : 0 %> / <%= p.dias %>
+          </div>
+        </td>
       </tr>
     <% }) %>
     <% }  else {%>
       <tr>
-        <td colspan="8">No hay préstamos registrados</td>
+        <td colspan="9">No hay préstamos registrados</td>
       </tr>
       <% } %>
   </tbody>

@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import cors from 'cors';
 //método de node para leer rutas absolutas
 import {dirname, join} from 'path'
 import { fileURLToPath } from "url";
@@ -9,6 +10,9 @@ import indexRoutes from './routes/index.js'
 import connectDB from "./config/dataBase.js";
 
 const app = express()
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
 //ruta absoluta 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 console.log(__dirname, 'views')
